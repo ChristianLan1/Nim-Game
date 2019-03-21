@@ -1,0 +1,788 @@
+============================================
+vis/result.rtx
+22:10:15_Sunday_29_April_2018
+============================================
+Feedback:
+	Your program ("Nimsys.java") has been submitted successfully.
+	Compiling your program with "javac"...
+	Your program has been result.rtxd successfully :-)
+Now, it's your responsibility to test your program for correctness!
+Here is a simple test case, and the results:
+============================================
+Test for input file: in1
+Expected results:							Your results:
+Welcome to Nim								Welcome to Nim
+
+$									$
+$									$
+$									$
+$									$
+$									$
+$george,George,Washington,0 games,0 wins				$george,George,Washington,0 games,0 wins
+jadams,John,Adams,0 games,0 wins					jadams,John,Adams,0 games,0 wins
+jmadison,James,Madison,0 games,0 wins					jmadison,James,Madison,0 games,0 wins
+jmonroe,James,Monroe,0 games,0 wins					jmonroe,James,Monroe,0 games,0 wins
+tom,Thomas,Jefferson,0 games,0 wins					tom,Thomas,Jefferson,0 games,0 wins
+
+$jmadison,James,Madison,0 games,0 wins					$jmadison,James,Madison,0 games,0 wins
+
+$									$
+
+Your results seem to be CORRECT :-).
+============================================
+Test for input file: in2
+Expected results:							Your results:
+Welcome to Nim								Welcome to Nim
+
+$									$
+$The player already exists.						$The player already exists.
+
+$									$
+$gbush,George,Bush,0 games,0 wins					$gbush,George,Bush,0 games,0 wins
+george,George,Washington,0 games,0 wins					george,George,Washington,0 games,0 wins
+
+$									$
+
+Your results seem to be CORRECT :-).
+============================================
+Test for input file: in3
+Expected results:							Your results:
+Welcome to Nim								Welcome to Nim
+
+$									$
+$									$
+$									$
+$george,George,Washington,0 games,0 wins				$george,George,Washington,0 games,0 wins
+jadams,John,Adams,0 games,0 wins					jadams,John,Adams,0 games,0 wins
+tom,Thomas,Jefferson,0 games,0 wins					tom,Thomas,Jefferson,0 games,0 wins
+
+$The player does not exist.						$The player does not exist.
+
+$									$
+$george,George,Washington,0 games,0 wins				$george,George,Washington,0 games,0 wins
+jadams,John,Adams,0 games,0 wins					jadams,John,Adams,0 games,0 wins
+
+$Are you sure you want to remove all players? (y/n)			$Are you sure you want to remove all players? (y/n)
+
+$									$
+$									$
+
+Your results seem to be CORRECT :-).
+============================================
+Test for input file: in4
+Expected results:							Your results:
+Welcome to Nim								Welcome to Nim
+
+$									$
+$jcarter,Jimmy,Carter,0 games,0 wins					$jcarter,Jimmy,Carter,0 games,0 wins
+
+$The player does not exist.						$The player does not exist.
+
+$									$
+$jcarter,James,Carter,0 games,0 wins					$jcarter,James,Carter,0 games,0 wins
+
+$									$
+$									$
+$									$
+$george,George,Washington,0 games,0 wins				$george,George,Washington,0 games,0 wins
+jadams,John,Adams,0 games,0 wins					jadams,John,Adams,0 games,0 wins
+
+$									$
+Initial stone count: 10							Initial stone count: 10
+Maximum stone removal: 3						Maximum stone removal: 3
+Player 1: George Washington						Player 1: George Washington
+Player 2: John Adams							Player 2: John Adams
+
+10 stones left: * * * * * * * * * *					10 stones left: * * * * * * * * * *
+George's turn - remove how many?					George's turn - remove how many?
+
+8 stones left: * * * * * * * *						8 stones left: * * * * * * * *
+John's turn - remove how many?						John's turn - remove how many?
+
+6 stones left: * * * * * *						6 stones left: * * * * * *
+George's turn - remove how many?					George's turn - remove how many?
+
+4 stones left: * * * *							4 stones left: * * * *
+John's turn - remove how many?						John's turn - remove how many?
+
+3 stones left: * * *							3 stones left: * * *
+George's turn - remove how many?					George's turn - remove how many?
+
+2 stones left: * *							2 stones left: * *
+John's turn - remove how many?						John's turn - remove how many?
+
+1 stones left: *							1 stones left: *
+George's turn - remove how many?					George's turn - remove how many?
+
+Game Over								Game Over
+John Adams wins!							John Adams wins!
+
+$100% | 01 games | John Adams						$100% | 01 games | John Adams
+0%   | 01 games | George Washington					0%   | 01 games | George Washington
+
+$									$
+
+Your results seem to be CORRECT :-).
+============================================
+src/NimGame.java
+22:09:09_Sunday_29_April_2018
+============================================
+
+
+
+/**
+ * 
+ * @author Xinjie Lan, Student Id: 910030, Username:xinjiel2
+ *@version 2.8
+ *@description this is the second project for COMP90041
+ * This class controls how the game operated
+ */
+
+
+public class NimGame {
+	private int count; // count turns in order to determine who will be the winner
+	public int numberOfStone;// total number of the stones
+	public int upperBound;
+
+	private void playerTurn(int numberOfStone, StringBuilder asterisks, int count, NimPlayer ply, int Keyboard,
+			NimGame game) {
+
+		if (numberOfStone > 0) {
+
+			int numOfRemoval = ply.removeStone(Keyboard);
+
+			numberOfStone -= numOfRemoval;
+
+			asterisks.delete(0, numOfRemoval * 2);
+			count++;
+			game.numberOfStone = numberOfStone;
+			game.count = count;
+
+			if (numberOfStone > 0) {// in case there is an extra line when
+									// stones <=0
+				System.out.println(numberOfStone + " stones left:" + asterisks);
+			}
+		}
+
+	}
+
+	private boolean checkCorrectInput(int removal) {
+		// This method considers all the incorrect inputs which has 6 possible
+		String invalidSyntaxBound = "Invalid move. You must remove between 1 and " + upperBound + " stones.";
+		String invalidSyntaxLeftStones = "Invalid move. You must remove between 1 and " + numberOfStone + " stones.";
+		while (removal > upperBound || removal > numberOfStone || removal == 0) {
+			System.out.println();
+			if (removal == 0 && upperBound > numberOfStone) {
+				System.out.println(invalidSyntaxLeftStones);
+				System.out.println();
+				return false;
+			} else if ((removal == 0 && upperBound < numberOfStone) || removal == 0) {
+				System.out.println(invalidSyntaxBound);
+				System.out.println();
+				return false;
+			} else if (removal > upperBound && upperBound > numberOfStone) {
+				System.out.println(invalidSyntaxLeftStones);
+				System.out.println();
+				return false;
+			} else if (removal > upperBound && upperBound < numberOfStone) {
+				System.out.println(invalidSyntaxBound);
+				System.out.println();
+				return false;
+			} else if (removal >= numberOfStone && upperBound <= numberOfStone) {
+				System.out.println(invalidSyntaxBound);
+				System.out.println();
+				return false;
+			} else if (removal >= numberOfStone && upperBound >= numberOfStone) {
+				System.out.println(invalidSyntaxLeftStones);
+				System.out.println();
+				return false;
+			}
+			// System.out.println();
+			// removal = Nimsys.Keyboard.nextInt();
+		}
+		return true;
+	}
+
+	public void gameStart(NimPlayer ply1, NimPlayer ply2, NimGame game) {
+
+		System.out.println();
+
+		StringBuilder asterisks = new StringBuilder();
+		for (int i = 0; i < numberOfStone; i++) {
+			asterisks.append(" " + "*");
+		}
+
+		System.out.println(numberOfStone + " stones left:" + asterisks);
+
+		while (numberOfStone > 0) {// This loop is used for repeating player's
+									// turns
+
+			System.out.println(ply1.getGivenName() + "'s turn - remove how many?");
+			System.out.println();
+			int removal = Nimsys.Keyboard.nextInt();
+			boolean correct = checkCorrectInput(removal);
+
+			while (!correct) {
+				System.out.println(numberOfStone + " stones left:" + asterisks);
+				System.out.println(ply1.getGivenName() + "'s turn - remove how many?");
+				System.out.println();
+				removal = Nimsys.Keyboard.nextInt();
+				correct = checkCorrectInput(removal);
+			}
+
+			playerTurn(numberOfStone, asterisks, count, ply1, removal, game);
+
+			if (numberOfStone > 0) {
+
+				System.out.println(ply2.getGivenName() + "'s turn - remove how many?");
+				System.out.println();
+				removal = Nimsys.Keyboard.nextInt();
+				correct = checkCorrectInput(removal);
+				while (!correct) {
+					System.out.println(numberOfStone + " stones left:" + asterisks);
+					System.out.println(ply1.getGivenName() + "'s turn - remove how many?");
+					System.out.println();
+					removal = Nimsys.Keyboard.nextInt();
+					correct = checkCorrectInput(removal);
+				}
+
+				playerTurn(numberOfStone, asterisks, count, ply2, removal, game);
+				// System.out.println("Second count " + count);
+			}
+
+		}
+		if (numberOfStone <= 0) {
+			System.out.println("Game Over");
+			String deleteExtraLine = Nimsys.Keyboard.nextLine();// To eliminate
+																// extra $ which
+																// created by
+																// removal
+			ply1.numOfGamePlayed += 1;
+			ply2.numOfGamePlayed += 1;
+
+			if (count % 2 == 0) {// odd number is player1's turn vice-versa
+
+				System.out.println(ply1.getGivenName() + " " + ply1.getFamilyName() + " wins!");
+				ply1.numOfGameWon += 1;
+			} else {
+				System.out.println(ply2.getGivenName() + " " + ply2.getFamilyName() + " wins!");
+				ply2.numOfGameWon += 1;
+			}
+
+			count = 0;// reset count every game
+		}
+
+	}
+}
+============================================
+src/NimPlayer.java
+22:09:09_Sunday_29_April_2018
+============================================
+
+
+
+/**
+ * 
+ * @author Xinjie Lan, Student Id: 910030, Username:xinjiel2
+ *@version 2.8
+ *@description this is the second project for COMP90041
+ * This class stores all the data for players
+ */
+
+
+
+
+public class NimPlayer implements Comparable<NimPlayer>{
+	
+	/*
+	 * for security reason, username,givenname, and familyname should be private
+	 */
+	private String username;
+	private String givenName;
+	private String familyName;
+	public int numOfGamePlayed=0;
+	public int numOfGameWon=0;
+	public double winningRatio;
+	
+	public int removeStone(int enteredRemovalNum){
+		
+		int numberOfRemoval = enteredRemovalNum;
+		
+		return numberOfRemoval;
+	}
+
+	@Override
+	public int compareTo(NimPlayer o) {
+		//override compareTo to determine 
+		//	the sequence of the object array by it's winning ratio(username if tie)
+		
+		double i = winningRatio -o.winningRatio;
+		if(i>0){
+			return -1;
+		}if(i<0){
+			return 1;
+		}else{
+		return this.username.compareTo(o.username);}
+	}
+	public NimPlayer(){
+		super();
+	}
+	public NimPlayer( String username, String givenName, String familyName,
+			int numOfGamePlayed, int numOfGameWon, double winningRatio) {
+		super();
+		
+		this.username = username;
+		this.givenName = givenName;
+		this.familyName = familyName;
+		this.numOfGamePlayed = numOfGamePlayed;
+		this.numOfGameWon = numOfGameWon;
+		this.winningRatio = winningRatio;
+	}
+
+	@Override
+	public String toString() {
+		//In order to output the ranking by specific format, several if-else statements are used
+		int winRate = (int)(winningRatio*100);
+		if(numOfGamePlayed<10){
+				
+			if(winRate==100){
+			
+			return winRate+"% "+"| "+"0"+numOfGamePlayed+" games"+" | "+ givenName+" "+familyName;
+		}
+		else if(winRate==0){
+			return winRate+"%   "+"| "+"0"+numOfGamePlayed+" games"+" | "+ givenName+" "+familyName;
+		}
+		else{
+		return winRate+"%  "+"| "+"0"+numOfGamePlayed+" games"+" | "+ givenName+" "+familyName;
+		}	}
+		else{
+			if(winRate==100){
+				
+				return winRate+"% "+"| "+numOfGamePlayed+" games"+" | "+ givenName+" "+familyName;
+			}
+			else if(winRate==0){
+				return winRate+"%   "+"| "+numOfGamePlayed+" games"+" | "+ givenName+" "+familyName;
+			}
+			else{
+			return winRate+"%  "+"| "+numOfGamePlayed+" games"+" | "+ givenName+" "+familyName;
+			}
+		}
+	}
+
+	public double getWinningRatio() {
+		return winningRatio;
+	}
+
+	public void setWinningRatio(double winningRatio) {
+		this.winningRatio = winningRatio;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getGivenName() {
+		return givenName;
+	}
+
+	public void setGivenName(String givenName) {
+		this.givenName = givenName;
+	}
+
+	public String getFamilyName() {
+		return familyName;
+	}
+
+	public void setFamilyName(String familyName) {
+		this.familyName = familyName;
+	}
+
+	public int getNumOfGamePlayed() {
+		return numOfGamePlayed;
+	}
+
+	public void setNumOfGamePlayed(int numOfGamePlayed) {
+		this.numOfGamePlayed = numOfGamePlayed;
+	}
+
+	public int getNumOfGameWon() {
+		return numOfGameWon;
+	}
+
+	public void setNumOfGameWon(int numOfGameWon) {
+		this.numOfGameWon = numOfGameWon;
+	}
+	
+
+
+}
+============================================
+src/Nimsys.java
+22:09:09_Sunday_29_April_2018
+============================================
+
+
+
+
+
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+/**
+ * @author Xinjie Lan, Student Id: 910030, Username:xinjiel2
+ * @version 2.8
+ * @description This is the second project for COMP90041
+ * Main method in this class
+ */
+
+public class Nimsys {
+	private final int IN_GAME = 0;
+	private final int IDLE = -1;
+	private final int FIRST_POSITION = 0;
+	private final int SECOND_POSITION = 1;
+	private final int THIRD_POSITION = 2;
+	private final int FOURTH_POSITION = 3;
+	private final int FIVTH_POSITION = 4;
+	private final int MAX_PLAYER = 100;
+	private final int Length_OF_ARRAY = 2;
+	private final int MAX_OUTPUT_PLAYERS = 10;
+
+	public static Scanner Keyboard = new Scanner(System.in);// The only static variable
+	
+
+	public int checkIndex(String[] command, NimPlayer[] ply) {
+		int index = 0;
+		for (int i = 0; i < ply.length; i++) {
+			if (ply[i] != null) {
+				if (command[SECOND_POSITION].equals(ply[i].getUsername())) {
+					index = i;
+					break;
+				}
+			}
+		}
+		return index;
+	}
+
+	public int[] checkTwoIndex(String[] command, NimPlayer[] ply) {
+		// This method return the position of the player in array
+		int[] indexForPlayers = new int[Length_OF_ARRAY];
+		for (int i = 0; i < ply.length; i++) {
+			if (ply[i] != null) {
+				if (command[FOURTH_POSITION].equals(ply[i].getUsername())) {
+					indexForPlayers[FIRST_POSITION] = i;
+				}
+				if (command[FIVTH_POSITION].equals(ply[i].getUsername())) {
+					indexForPlayers[SECOND_POSITION] = i;
+				}
+			}
+		}
+		return indexForPlayers;
+	}
+
+	public boolean checkArr(String[] command, NimPlayer[] ply) {
+		// This method check if the player exists
+		for (int i = 0; i < ply.length; i++) {
+			if (ply[i] != null & command[SECOND_POSITION] != null) {
+				if (command[SECOND_POSITION].equals(ply[i].getUsername())) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public boolean checkTwoUsers(String[] command, NimPlayer[] ply) {
+		// This method check if both player in the array
+		int count = 0;
+		for (int i = 0; i < ply.length; i++) {
+			if (ply[i] != null) {
+				if (command[FOURTH_POSITION].equals(ply[i].getUsername())) {
+					count += 1;
+				}
+				if (command[FIVTH_POSITION].equals(ply[i].getUsername())) {
+					count += 1;
+				}
+				if (count == 2) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public NimPlayer[] rankingList(NimPlayer[] playerData) {
+		// This method returns the sorted player list by winning ratio(alphabet
+		// if tie)
+		NimPlayer[] plyRanking = new NimPlayer[playerData.length];
+		int index = 0;
+		for (int i = 0; i < playerData.length; i++) {
+			if (playerData[i] == null) {
+				continue;
+			}
+			if (playerData[i].numOfGamePlayed != 0) {
+				playerData[i].winningRatio = (double) playerData[i].numOfGameWon / playerData[i].numOfGamePlayed;
+				plyRanking[i] = playerData[i];
+				index = i + 1;
+			}
+			if (playerData[i].numOfGamePlayed == 0) {
+				playerData[i].winningRatio = 0;
+				plyRanking[i] = playerData[i];
+				index = i + 1;
+			}
+		}
+
+		NimPlayer[] newPlyRanking = new NimPlayer[index];
+
+		System.arraycopy(plyRanking, 0, newPlyRanking, 0, index);
+		// copy the sorted array into the new array without null
+
+		Arrays.sort(newPlyRanking);// override compareTo method in NimPlayer class
+
+		return newPlyRanking;
+	}
+
+	public void addPlayer(Nimsys system, String[] command, NimPlayer[] playerData) {
+		if (system.checkArr(command, playerData)) {
+			for (int i = 0; i < playerData.length; i++) {
+				if (playerData[i] == null) {
+					playerData[i] = new NimPlayer();
+					playerData[i].setUsername(command[SECOND_POSITION]);
+					playerData[i].setGivenName(command[FOURTH_POSITION]);
+					playerData[i].setFamilyName(command[THIRD_POSITION]);
+					break;
+				}
+			}
+		} else {
+			System.out.println("The player already exists.");
+		}
+	}
+
+	public void removePlayer(Nimsys system, String[] command, NimPlayer[] playerData) {
+		if (command.length < Length_OF_ARRAY) {
+			System.out.println("Are you sure you want to remove all players? (y/n)");
+			String removeAll = Keyboard.nextLine();
+			if (removeAll.equals("y") || removeAll.equals("Y")) {
+				for (int i = 0; i < playerData.length; i++) {
+					playerData[i] = null;
+				}
+			}
+			// continue;
+		} else if (!system.checkArr(command, playerData)) {
+			playerData[system.checkIndex(command, playerData)] = null;
+		} else {
+			System.out.println("The player does not exist.");
+		}
+	}
+
+	public void editPlayer(Nimsys system, String[] command, NimPlayer[] playerData) {
+		if (!system.checkArr(command, playerData)) {
+			
+			playerData[system.checkIndex(command, playerData)].setGivenName(command[FOURTH_POSITION]);
+			
+			playerData[system.checkIndex(command, playerData)].setFamilyName(command[THIRD_POSITION]);
+		} else {
+			System.out.println("The player does not exist.");
+		}
+
+	}
+
+	public void displayPlayer(Nimsys system, String[] command, NimPlayer[] playerData) {
+		String[] usernameOrder = new String[playerData.length];
+		// put all the usernames into a new array
+		int index = 0;
+		for (int i = 0; i < playerData.length; i++) {
+			if (playerData[i] != null) {
+				usernameOrder[i] = playerData[i].getUsername();
+				index = i + 1;
+			}
+
+		}
+		String[] newUsernameOrder = new String[index];
+
+		System.arraycopy(usernameOrder, 0, newUsernameOrder, 0, index);// eliminate all the null
+
+		Arrays.sort(newUsernameOrder);
+
+		NimPlayer storedPlayer = new NimPlayer();
+		// creating a instance of NimPlayer to store the value
+		for (int i = 0; i < newUsernameOrder.length; i++) {
+			// re-assign the positions of playerData by it's username's positions
+			for (int j = 0; j < playerData.length; j++) {
+				if (playerData[j] != null) {
+					if (newUsernameOrder[i].equals(playerData[j].getUsername())) {
+						storedPlayer = playerData[i];
+						playerData[i] = playerData[j];
+						playerData[j] = storedPlayer;
+					}
+				}
+			}
+		}
+
+		if (command.length < Length_OF_ARRAY) {
+			for (int i = 0; i < playerData.length; i++) {
+				if (playerData[i] != null) {
+					System.out.println(playerData[i].getUsername() + "," + playerData[i].getGivenName() + ","
+							+ playerData[i].getFamilyName() + "," + playerData[i].numOfGamePlayed + " games" + ","
+							+ playerData[i].numOfGameWon + " wins");
+				}
+			}
+			// continue;
+		} else if (!system.checkArr(command, playerData) && command[SECOND_POSITION] != null) {
+			System.out.println(playerData[system.checkIndex(command, playerData)].getUsername() + ","
+					+ playerData[system.checkIndex(command, playerData)].getGivenName() + ","
+					+ playerData[system.checkIndex(command, playerData)].getFamilyName() + ","
+					+ playerData[system.checkIndex(command, playerData)].numOfGamePlayed + " games" + ","
+					+ playerData[system.checkIndex(command, playerData)].numOfGameWon + " wins");
+		} else {
+			System.out.println("The player does not exist.");
+		}
+	}
+
+	public void resetStats(Nimsys system, String[] command, NimPlayer[] playerData) {
+		if (command.length < Length_OF_ARRAY) {
+			System.out.println("Are you sure you want to reset all player statistics? (y/n)");
+			String resetAll = Keyboard.nextLine();
+			System.out.println("command " + resetAll);
+			if (resetAll.equals("y") || resetAll.equals("Y")) {
+
+				for (int i = 0; i < playerData.length; i++) {
+
+					if (playerData[i] != null) {
+						playerData[i].numOfGamePlayed = 0;
+						playerData[i].numOfGameWon = 0;
+					}
+				}
+			}
+			System.out.println();
+			// continue;
+		} else if (!system.checkArr(command, playerData)) {
+			playerData[system.checkIndex(command, playerData)].numOfGamePlayed = 0;
+			playerData[system.checkIndex(command, playerData)].numOfGameWon = 0;
+		} else {
+			System.out.println("The player does not exist.");
+		}
+	}
+	public void descOutput(NimPlayer[] playerData){
+		if(playerData.length<=MAX_OUTPUT_PLAYERS){
+			for (int i = 0; i < playerData.length; i++) {
+				if (playerData[i] != null) {
+					System.out.println(playerData[i]);
+				}
+			}
+			// continue;
+		}		else{
+						for (int i = 0; i < 10; i++) {
+								if (playerData[i] != null) {
+									System.out.println(playerData[i]);
+				}
+			}
+		}
+	}
+
+	public void rankings(Nimsys system, String[] command, NimPlayer[] playerData) {
+		playerData = system.rankingList(playerData);// getting the sorted rankinglist
+		if (command.length < Length_OF_ARRAY) {
+			descOutput(playerData);
+			
+		} else if (command[SECOND_POSITION].equals("desc")) {
+			descOutput(playerData);
+		} else if (command[SECOND_POSITION].equals("asc")) {
+			//System.out.println(playerData.length);
+			if(playerData.length>MAX_OUTPUT_PLAYERS){
+			for (int i = (playerData.length-1); i >=(playerData.length-MAX_OUTPUT_PLAYERS); i--) {
+				
+				if (playerData[i] != null) {
+					System.out.println(playerData[i]);
+					}
+
+				}
+			}else{
+				for (int i = (playerData.length-1); i >= 0; i--) {
+					
+					if (playerData[i] != null) {
+						System.out.println(playerData[i]);
+						}
+
+					}
+			}
+		}
+		
+	}
+
+	public void systemCommand(NimGame game, Nimsys system, NimPlayer[] playerData) {
+
+		System.out.println("Welcome to Nim");
+		int state = IDLE;
+		while (state != IN_GAME) {
+			System.out.println();
+			System.out.print("$");
+			String commandInput = Keyboard.nextLine();
+
+			String regex = "[^a-zA-Z_0-9]";
+			String[] command = commandInput.split(regex);
+
+			if (command[FIRST_POSITION].equals("addplayer")) {
+				// switch may not work on server so using if-else if-else here
+
+				addPlayer(system, command, playerData);
+
+			} else if (command[FIRST_POSITION].equals("removeplayer")) {
+				removePlayer(system, command, playerData);
+
+			} else if (command[FIRST_POSITION].equals("editplayer")) {
+				editPlayer(system, command, playerData);
+
+			} else if (command[FIRST_POSITION].equals("resetstats")) {
+				resetStats(system, command, playerData);
+			} else if (command[FIRST_POSITION].equals("displayplayer")) {
+				displayPlayer(system, command, playerData);
+
+			} else if (command[FIRST_POSITION].equals("rankings")) {
+				rankings(system, command, playerData);
+
+			} else if (command[FIRST_POSITION].equals("startgame")) {
+				if (!system.checkTwoUsers(command, playerData)) {
+					int[] indexForPlayers = system.checkTwoIndex(command, playerData);
+					//store the specified players into an array (indexForPlayers)
+					System.out.println();
+					System.out.println("Initial stone count: " + command[SECOND_POSITION]);
+					
+					game.numberOfStone = Integer.parseInt(command[SECOND_POSITION]);
+					System.out.println("Maximum stone removal: " + command[THIRD_POSITION]);
+					
+					game.upperBound = Integer.parseInt(command[THIRD_POSITION]);
+					
+					System.out.println("Player 1: " + playerData[indexForPlayers[FIRST_POSITION]].getGivenName() + " "
+							+ playerData[indexForPlayers[FIRST_POSITION]].getFamilyName());
+					
+					System.out.println("Player 2: " + playerData[indexForPlayers[SECOND_POSITION]].getGivenName() + " "
+							+ playerData[indexForPlayers[SECOND_POSITION]].getFamilyName());
+
+					game.gameStart(playerData[indexForPlayers[FIRST_POSITION]],
+							playerData[indexForPlayers[SECOND_POSITION]], game);
+					//use user-specified players to initiate game
+				} else {
+					System.out.println("One of the players does not exist.");
+				}
+			} else if (command[FIRST_POSITION].equals("exit")) {
+				System.out.println();
+				System.exit(0);
+				state = IN_GAME;
+			}
+		}
+
+	}
+
+	public static void main(String[] args) {
+		NimGame game = new NimGame();// creating an instance of the game
+		Nimsys system = new Nimsys();
+		NimPlayer[] playerData = new NimPlayer[system.MAX_PLAYER];
+		system.systemCommand(game, system, playerData);
+	}
+
+}
